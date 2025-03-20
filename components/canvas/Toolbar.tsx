@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner"
 import type { Layer } from '@/schema/schema';
 import ColorPicker from './ColorPicker';
+import BrushPreview from './BrushPreview';
 
 
 interface ToolbarProps {
@@ -59,6 +60,14 @@ const Toolbar = ({
     <div className="flex items-center gap-4 p-4 bg-card rounded-lg shadow-sm">
         <div className="flex items-center gap-4">
             <ColorPicker color={color} onColorChange={onColorChange}/>
+            <Tooltip>
+                <TooltipTrigger asChild>
+                    <div>
+                       <BrushPreview color={color} strokeWidth={strokeWidth} />
+                    </div>
+                </TooltipTrigger>
+                <TooltipContent>Brush Preview </TooltipContent>
+            </Tooltip>
         </div>
     </div>
   )

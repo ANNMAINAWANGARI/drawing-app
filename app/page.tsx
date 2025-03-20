@@ -4,13 +4,16 @@ import { useState } from "react";
 
 export default function Home() {
   const [color, setColor] = useState("#000000");
+  const [strokeWidth, setStrokeWidth] = useState(2);
   return (
     <div className="min-h-screen bg-background ">
       {/**toolbar */}
       <div className="p-2">
         <Toolbar
         color={color}
-        onColorChange={setColor}/>
+        onColorChange={setColor}
+        strokeWidth={strokeWidth}
+        onStrokeWidthChange={setStrokeWidth}/>
       </div>
       {/**canvas and layer */}
       <div className="flex p-2">
