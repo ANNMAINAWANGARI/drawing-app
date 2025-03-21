@@ -17,7 +17,9 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { toast } from "sonner"
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import type { Layer } from '@/schema/schema';
 import ColorPicker from './ColorPicker';
 import BrushPreview from './BrushPreview';
@@ -57,7 +59,7 @@ const Toolbar = ({
     onShare,
   }: ToolbarProps) => {
   return (
-    <div className="flex items-center gap-4 p-4 bg-card rounded-lg shadow-sm">
+    <div className="flex items-center gap-4 p-2 bg-card rounded-lg shadow-sm">
         <div className="flex items-center gap-4">
             <ColorPicker color={color} onColorChange={onColorChange}/>
             <Tooltip>
@@ -68,6 +70,15 @@ const Toolbar = ({
                 </TooltipTrigger>
                 <TooltipContent>Brush Preview </TooltipContent>
             </Tooltip>
+        </div>
+        <div className='w-40'>
+            <Slider
+            value={[strokeWidth]}
+            min={1}
+            max={20}
+            step={1}
+            onValueChange={(v) => onStrokeWidthChange(v[0])}
+            />
         </div>
     </div>
   )
