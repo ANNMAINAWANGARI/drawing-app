@@ -35,6 +35,44 @@ export default function Home() {
     ));
     setRedoStack([]); // Clear redo stack when new path is added
   }, [activeLayerId]);
+
+  //undo function
+  const handleUndo = useCallback(() => {
+    setLayers(prev => {
+      const activeLayer = prev.find(l => l.id === activeLayerId);
+      if (!activeLayer || activeLayer.paths.length === 0) return prev;
+
+      const newPaths = [...activeLayer.paths];
+      const undone = newPaths.pop()!;
+
+      setUndoStack(prev => [...prev, { layerId: activeLayerId, path: undone }]);
+
+      return prev.map(layer =>
+        layer.id === activeLayerId
+          ? { ...layer, paths: newPaths }
+          : layer
+      );
+    });
+  }, [activeLayerId]);
+
+  //redo function
+  const handleRedo = useCallback(() => {
+    if (undoStack.length === 0) return;
+
+    const lastUndo = undoStack[undoStack.length - 1];
+    if (lastUndo.layerId !== activeLayerId) return;
+
+    setLayers(prev => prev.map(layer =>
+      layer.id === activeLayerId
+        ? { ...layer, paths: [...layer.paths, lastUndo.path] }
+        : layer
+    ));
+
+    setUndoStack(prev => prev.slice(0, -1));
+  }, [undoStack, activeLayerId]);
+  const activeLayer = layers.find(l => l.id === activeLayerId);
+  const canUndo = activeLayer ? activeLayer.paths.length > 0 : false;
+  const canRedo = undoStack.length > 0;
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/**toolbar */}
@@ -43,11 +81,15 @@ export default function Home() {
         color={color}
         onColorChange={setColor}
         strokeWidth={strokeWidth}
-        onStrokeWidthChange={setStrokeWidth}/>
+        onStrokeWidthChange={setStrokeWidth}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        onUndo={handleUndo}
+        onRedo={handleRedo}/>
       </div>
       {/**canvas and layer */}
       <div className="flex flex-1 p-2  ">
-        <div className="basis-1/3 bg-stone-700">layer section</div>
+        <div className="basis-1/3 bg-zinc-500 text-white">layer section</div>
         <div className="flex-grow  p-2 basis-2/3 ">
            <DrawingCanvas
            ref={canvasRef}
